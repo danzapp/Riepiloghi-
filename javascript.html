@@ -1,0 +1,155 @@
+<script>
+// Load the Visualization API and desired package(s).
+  google.load('visualization', '1.0', {'packages':['controls']});
+  google.load("visualization", "1", {packages:["corechart", "table"]})
+  /**
+   * Run initializations on dialog load.
+   */ 
+  
+   $(function () {
+       $('#datetimepicker1').datetimepicker({
+           locale:'it',
+           format: 'MM/YYYY'
+       });
+    });
+    
+    
+  $('#myForm').validator().on('submit', function (e) {
+  console.log(e)
+  $("#loader").removeClass('hidden');
+  if (e.isDefaultPrevented()) {
+    // handle the invalid form...
+    console.log('invalid form')
+  } 
+  else {
+    // everything looks good!
+       console.log('produci riepilogo')
+       var datePicked =$("#datetimepicker1").find("input").val()
+       //var periodo = '"' + datePicked.substring(1,11)+'"'
+       var periodo = datePicked
+       console.log(periodo)
+       
+       // QUI VIENE LANCIATO LO SCRIPT LATO SERVER
+       google.script.run
+       .withSuccessHandler(drawDashboard)
+       .withUserObject(periodo)
+       .creaRiepilogo(periodo)
+       return false // IMPORTANTE!! evita il reinderizzamento ad una pagina bianca 
+ }
+ })
+       
+  /**
+   * Callback function to generate visualization using data in response parameter.
+   * From gist.github.com/mogsdad/60dcc4116ed74fceb5f9
+   * 
+   * @param {Object[][]}  Two-Dim array of visualization data
+   */
+   
+    function drawDashboard(mainObj, periodo){
+    var response = mainObj.data
+    if (response == null) {
+      alert('Error: Invalid source data.')
+    return;
+    }
+    else {
+      console.log(JSON.stringify(response)) 
+      // crea e popola la DataTable
+      var data = new google.visualization.arrayToDataTable(response,false);
+      //data.setProperty(0, 0, 'style', 'width:200px');
+      data.setProperty(2, 0, 'style', 'width:50px');
+      // definisce un ChartWrapper per la visualizzazione della DataTable
+      
+      var cssClassNames = {
+        'headerRow': 'googleHeaderRow',
+        'selectedTableRow': 'googleSelectedTableRow',
+        'hoverTableRow': 'googleHoverTableRow',
+        'headerCell': 'googleHeaderCell',
+        'tableCell': 'googleTableCell',
+        'rowNumberCell': 'googleRowNumberCell'
+        };
+
+      var options = {
+       'page': 'disable',
+       'alternatingRowStyle': true,
+       'showRowNumber': true, 
+       'allowHtml': true, 
+       'cssClassNames': cssClassNames};
+       
+       /*'view': {
+                   'columns': [0, 1],
+                   'rows': [0,1,2,3,4,5,6]
+                   }
+       */
+
+      var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard-div'))
+      
+     // definisce il tipo di grafico per la datatables
+     var table = new google.visualization.ChartWrapper({
+        'containerId': 'table-div',
+        'chartType': 'Table',
+        'options': options
+      });
+      
+     
+      // definisce i controlli (filtri, ecc)
+      var numberSlider = new google.visualization.ControlWrapper({
+        'controlType': 'NumberRangeFilter',
+        'containerId': 'slider-div',
+        'options': {
+          'filterColumnLabel': 'ASSENZE TOTALI'
+         }
+      });
+    
+      var personPicker = new google.visualization.ControlWrapper({
+        'controlType': 'CategoryFilter',
+        'containerId': 'selector-div',
+        'options': {
+          'filterColumnLabel': 'PERSONALE'
+        }
+      });
+      
+      $('#dashboard-title').html('Riepiloghi Assenze ' + periodo)
+      
+      
+      // Set up dependencies between controls and charts
+      dashboard.bind(numberSlider, table);
+      dashboard.bind(personPicker, table);
+     
+      // Draw all visualization components of the dashboard
+      // rende visibile il loader sul bottone Produci
+      $("#loader").addClass('hidden');
+      // rende visibile il panel di output
+      $('#output').removeClass('hidden');
+
+      //rimuove i nomi di classe nell'oggetto table
+        google.visualization.events.addListener(table, 'ready', function(){
+          $(".google-visualization-table-table").attr('class', 'table');
+          $(".google-visualization-table-div-page").attr('class', 'pagination') 
+          $("table").addClass( 'table-bordered table-condensed table-hover table-responsive' );
+        }); 
+     
+     // renderizza il dashboard che contiene la datatable
+     dashboard.draw(data);
+     };
+     console.log(JSON.stringify(response))
+     sessionStorage.setItem('data', JSON.stringify(response));
+     var printableData = mainObj.assenze
+     var storedPrintableData = sessionStorage.getItem('printableData');
+     console.log(storedPrintableData)
+     return response
+   };
+   
+
+   $('#printTable').click(function (storedPrintableData){
+          
+         console.log('print table')
+         console.log(storedPrintableData)
+         
+         var properties = ["PERSONALE","MALATTIA","MALATTIA / CONGEDO FIGLI / FAMIGLIA","PERMESSI DI SERVIZIO","PERMESSI SINDACALI","FERIE","L. 104","PERMESSI PERSONALI","ASSENZE TOTALI","MPM","STR","STM","STRAORDINARIO TOTALE"]
+         printJS({printable: storedPrintableData,  properties: properties, type: 'json'});
+   })
+   
+   
+   
+
+</script>

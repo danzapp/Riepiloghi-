@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  
+  <?!= include('CSS.html'); ?>
+  <meta ID="description" content="">
+  <meta ID="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  <!--jQuery-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  
+  <!--BOOTSTRAP-->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.js"></script>
+  
+    <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  
+  <!--Bootstrap-validator-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
+
+  <!--moment.js-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/locale/it.js"></script>
+  
+  <!--Bootstrap-dateTimepicker-->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/css/bootstrap-datetimepicker.css" />
+  
+  <!--loader-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <!-- print.js export table in pdf-->
+   <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>   
+   <link rel="stylesheet" type="text/css" href="https://printjs-4de6.kxcdn.com/print.min.css">
+  
+
+</head>
+<body>
+  <div class="container-fluid">
+     <div class="jumbotron">
+      <h1>Produzione riepiloghi <small>ver 1.2</small></h1>
+     </div>
+     
+     <!-- la modal non funziona su Google Sites>
+      <a data-toggle="modal" href="#modalAdd" btn btn-default btn-md>
+        <span class="glyphicon glyphicon-plus-sign"  ></span> Modal
+      </a>
+     <-->
+    
+        <form id="myForm" data-toggle="validator" role="form">
+          <div class="form-group">
+            <div class="row">
+                <div class='col-sm-6'>
+                    <div class="form-group">
+                       <label>Selezionare il mese desiderato</label>
+                          <div class='input-group date col-sm-3' id='datetimepicker1' data-date-format="MM/YYYY">
+                            <input type='text' class="form-control" required >
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                          </div>
+                          <div class="help-block with-errors"></div>
+                    </div>
+                    <button type="submit" class="btn btn-default" data-disable="true" >Produci <i id='loader' class="fa fa-spinner fa-spin hidden"></i></button>
+                </div>
+            </div>
+        </div>
+       </form>
+      <div id='output' class="hidden">
+        <h2 id="dashboard-title"></h2>
+        <div id='png'></div>
+          <div id='control-div' class='panel panel-default'>
+            <div class='panel-heading'>
+              <p id="selector-div"></p>
+              <p id='slider-div'></p>
+               <!--button id="printTable" type="button" class="btn btn-default btn-sm pull-right"-->
+               <button id="printTable" type="button" class="btn btn-default btn-sm pull-right" type="button">
+                  <span class="glyphicon glyphicon-print"></span> 
+                 <span style="font-size:smaller;">Esporta in PDF</span>
+               </button>
+
+            </div>
+          </div>
+         <div id='table-container' class='panel panel-default '>
+            <div class="panel-body">
+                  <div id='table-div'></div>         
+            </div>
+         </div>
+       </div>
+    </div>
+
+    <div id="table-div2"></div>
+    <div class="hidden" id="error-message">
+    </div>
+  </body>
+</html>
+
+
+<?!= HtmlService.createHtmlOutputFromFile('javascript').getContent(); ?>
+
+
