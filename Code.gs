@@ -18,6 +18,7 @@ function creaRiepilogo(date) {
   Logger.log(periodo)
   
   // recupera le tipologieAssenze da objCodici
+  //Logger.log(objCodici)
   var tipologiaAssenze = uniqueBy(objCodici, function(x){return x.tipologia_assenza;})
   //var tipologiaStraordinario = ['STR', 'MPM', 'STM']
   var tipologiaStraordinario = uniqueBy(objAgenda, function(x){return x.tipo_maggior_orario;})
@@ -55,7 +56,6 @@ function creaRiepilogo(date) {
   
   // inserisci per ogni membro del personale le assenze e gli straordinari per ogni tipologia
   // e imposta ogni tipologia = 0 
-
   for (var i = 0; i<objTeam.length; i++){
   Logger.log( objTeam[i].cognome)
       var Assenze= {
@@ -80,20 +80,27 @@ function creaRiepilogo(date) {
   // conteggia le assenze effettive per ogni personale in un oggetto Assenze
   
   // filtra objAgenda per periodo, Cognome e diverso da 'Annullata' 
-  var agendaNominativo = objAgenda.filter(function(el){
-      return el.data>new Date(anno,mese-1) &&  el.data<new Date(anno,mese)  &&  el.stato != 'Annullata' && el.cognome == Assenze.cognome
-  })
-  
-  
-  // filtra i soli codici che sono assegnati ad una tipologia assenza
-  Logger.log(agendaNominativo.length)
 
+ var agendaNominativo = objAgenda.filter(function(el){
+
+      return el.data>=new Date(anno,mese-1) &&  el.data<new Date(anno,mese)  &&  el.stato != 'Annullata' && el.cognome == Assenze.cognome
+  })
+ 
+  
+  // determina le colonne da visualizzare filtrando i soli codici che sono assegnati ad una tipologia assenza 
+  Logger.log('agendaNominativo')
+  Logger.log(agendaNominativo)
+  Logger.log(agendaNominativo.length)
+  Logger.log('objAgenda')
+  Logger.log(JSON.stringify(objAgenda))
   var codici = uniqueBy(agendaNominativo, function(x){return x.codice_assenza;})
  
   // itera per ogni registrazione in 
   
       for (var j in agendaNominativo){  
-           var codiceAssenza = objAgenda[j]['codice_assenza']
+       
+          
+            var codiceAssenza = agendaNominativo[j]['codice_assenza']
             var tipologiaAssenza = lookup(objCodici,'codice',codiceAssenza,'tipologia_assenza')
               for (var prop in Assenze.Tipologia){
                    switch(tipologiaAssenza) {
@@ -105,16 +112,18 @@ function creaRiepilogo(date) {
                   }
                 }
        }
-//    var agendaNominativo = agendaNominativo.filter(function(el){
-//      return el.maggior_orario_effettuato != '' &&  el.tipo_maggior_orario != '' 
-//    })  
-    
+ Logger.log(Assenze)
+
+ 
+// per ogni nominativo calcola i totali per ogni tipo di straordinario
     for (var j in agendaNominativo){ 
          for (var x = 0; x<tipologiaStraordinario.length; x++){
          
                    switch (agendaNominativo[j].tipo_maggior_orario) {
                     case tipologiaStraordinario[x]:
+                    Logger.log('maggior orario ' + agendaNominativo[j].maggior_orario_effettuato)
                      Assenze.straordinario[tipologiaStraordinario[x]] = Assenze.straordinario[tipologiaStraordinario[x]] + agendaNominativo[j].maggior_orario_effettuato
+                     Logger.log(Assenze.straordinario[tipologiaStraordinario[x]])
                     break;
                    default:
                     break           
@@ -122,7 +131,7 @@ function creaRiepilogo(date) {
         }
     }  
     
-      // calcola i totali assenze per ogni personale
+//  per ogni nominativo calcola i totali assenze 
 
     var totaleAssenze = sum(Assenze.Tipologia)
     Assenze.Tipologia['Assenze totali'] = totaleAssenze
@@ -138,9 +147,10 @@ function creaRiepilogo(date) {
     }
     Logger.log(Assenze)
     assenze.push(Assenze)
-    //if (Assenze.cognome == 'Pietrini'){stop}
-    
+    Logger.log('ASSENZE')
+    Logger.log(Assenze)
  }
+  
   // trasforma l'array di oggetti "assenze" in un array2D
   var data = objToArray2D(assenze)
   
@@ -149,6 +159,7 @@ function creaRiepilogo(date) {
   
   // aggiunge le intestazioni in cima all'array
   data.unshift(headers)
+  
   
   Logger.log(data)
   // imposta la proprietà AssenzePersonale dell'oggetto Riepilogo con l'array "assenze"

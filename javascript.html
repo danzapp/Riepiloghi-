@@ -69,7 +69,6 @@
         };
 
       var options = {
-       'page': 'disable',
        'alternatingRowStyle': true,
        'showRowNumber': true, 
        'allowHtml': true, 
@@ -99,6 +98,7 @@
           'filterColumnLabel': 'ASSENZE TOTALI'
          }
       });
+      
     
       var personPicker = new google.visualization.ControlWrapper({
         'controlType': 'CategoryFilter',
@@ -125,10 +125,14 @@
         google.visualization.events.addListener(table, 'ready', function(){
           $(".google-visualization-table-table").attr('class', 'table');
           $(".google-visualization-table-div-page").attr('class', 'pagination') 
-          $("table").addClass( 'table-bordered table-condensed table-hover table-responsive' );
+          $("table").addClass( 'table-bordered table-condensed table-hover table-responsive' );       
+          $(".google-visualization-table-table").attr('class', 'pre-scrollable')
         }); 
-     
+
+
      // renderizza il dashboard che contiene la datatable
+
+      
      dashboard.draw(data);
      };
      console.log(JSON.stringify(response))
@@ -144,9 +148,10 @@
           
          console.log('print table')
          console.log(storedPrintableData)
-         
+
          var properties = ["PERSONALE","MALATTIA","MALATTIA / CONGEDO FIGLI / FAMIGLIA","PERMESSI DI SERVIZIO","PERMESSI SINDACALI","FERIE","L. 104","PERMESSI PERSONALI","ASSENZE TOTALI","MPM","STR","STM","STRAORDINARIO TOTALE"]
-         printJS({printable: storedPrintableData,  properties: properties, type: 'json'});
+         //printJS({printable: storedPrintableData,  properties: properties, type: 'html'});
+         printJS({printable: 'table-div', type: 'html'});
    })
    
    

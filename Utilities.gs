@@ -88,22 +88,48 @@ function getNum(val) {
 }
 
 function convertHHMMSSToSeconds(hms){
-   Logger.log(hms)
+   // per il test
+   //hms = new Date('Sat Dec 30 1899 13:24:00 GMT+0100 (CET)')
    if (typeof(hms) == 'number' || hms == ''){
-     var seconds = 0
+     //Logger.log('NUMBER')
+     //Logger.log('hms is NUMBER= ' + hms)
+        var hours = 99
+        var minutes = 59
+        var seconds = 59
    }
 
-   else
-   {
+   // verifica che hms sia DATE
+   if (typeof(hms) == 'object'){
+        //Logger.log('DATE')
+        var hours = hms.getHours()
+        var minutes = hms.getMinutes()
+        var seconds = hms.getSeconds()
+   }
+  
+  //verifica se hms è STRING
+  if (typeof(hms) == 'string'){
+  
+  //Logger.log('STRING')
      var a = hms.split(':'); // split it at the colons
      // minutes are worth 60 seconds. Hours are worth 60 minutes.
-     var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+        var hours = a[0]
+        var minutes = a[1]
+        var seconds = a[2]
    }
-return seconds
+  var time = (+hours) * 60 * 60 + (+minutes) * 60 + (+seconds);     
+  /*
+  Logger.log('convertHHMMSSToSeconds(' + hms +')') 
+  Logger.log('hms ' + hms)
+  Logger.log('type ' + typeof(hms))   
+  Logger.log('hours ' + hours)
+  Logger.log('minutes ' + minutes)
+  Logger.log ('seconds ' + seconds)
+  Logger.log('time ' + time)
+  */
+  return time
 }
 
 function convertSecondsToHHMM(seconds){
-
 var minutes = (seconds/3600) - (seconds % 3600)
      if (minutes == 0 || typeof(minutes) != 'number'){
        return '00:00'
@@ -113,6 +139,7 @@ var minutes = (seconds/3600) - (seconds % 3600)
      var seconds = Math.floor((seconds - ((hours * 3600) + (minutes * 60))));
      var hhmm = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes);
  return(hhmm);
+
 }
 
 function lookup(obj,propA,valueA,propB){

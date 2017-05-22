@@ -34,8 +34,9 @@ sheetTeam = ssTeam.getSheetByName('ImportedTeam')
 dataRangeTeamValues= sheetTeam.getDataRange().getValues()
 Logger.log("Membri del Team = " + dataRangeTeamValues.length)
 //extract headers
-HeadersTeam = dataRangeTeamValues.slice(0,1);
-Team = dataRangeTeamValues.slice(2,dataRangeTeamValues.length);
+HeadersTeam = dataRangeTeamValues[0];
+dataRangeTeamValues.shift() // elimina la riga degli headers
+Team = dataRangeTeamValues
 
 objTeam = Team.map(function(y) {
     return {  
@@ -48,8 +49,10 @@ objTeam = Team.map(function(y) {
 ssCodici = SpreadsheetApp.openByUrl('https://docs.google.com/spreadsheets/d/1lR-utYMNDTWogV5bBZpjTGAMmERKunVh_h9dvpOxtY0/edit#gid=694955309')
 sheetCodici = ssCodici.getSheetByName('ImportedCodici')
 dataRangeCodiciValues= sheetCodici.getDataRange().getValues()
-HeadersCodici = dataRangeCodiciValues.slice(0,1);
-Codici = dataRangeCodiciValues.slice(2,dataRangeCodiciValues.length);
+HeadersCodici = dataRangeCodiciValues[0];
+dataRangeCodiciValues.shift()
+//Codici = dataRangeCodiciValues.slice(2,dataRangeCodiciValues.length);
+Codici = dataRangeCodiciValues
 objCodici = Codici.map(function(y) 
   {if (y[1]!='')
     {
