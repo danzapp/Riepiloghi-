@@ -40,7 +40,7 @@ Team = dataRangeTeamValues
 
 objTeam = Team.map(function(y) {
     return {  
-          "cognome": y[0].charAt(0).toUpperCase() + y[0].slice(1).toLowerCase()
+          "cognome": y[1].charAt(0).toUpperCase() + y[1].slice(1).toLowerCase()
           
       }
     })

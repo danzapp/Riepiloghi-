@@ -13,7 +13,7 @@ function include(filename) {
 }
 
 function creaRiepilogo(date) {
-
+Logger.log(objTeam)
   var periodo = date
   Logger.log(periodo)
   
@@ -58,6 +58,7 @@ function creaRiepilogo(date) {
   // e imposta ogni tipologia = 0 
   for (var i = 0; i<objTeam.length; i++){
   Logger.log( objTeam[i].cognome)
+
       var Assenze= {
         cognome: objTeam[i].cognome
       }
